@@ -1,0 +1,75 @@
+@use 'sass:list';
+@use 'sass:map';
+@use 'sass:meta';
+@use '@wide/styles-utils' as utils;
+@use '../variables' as *;
+
+///
+/// Set all float classes from the `$overflows` variable.
+///
+/// By default, `$overflows` list variable is set with:
+///  - `auto`,
+///  - `hidden`
+///
+/// @param {string} $bp - Breakpoint string key.
+///
+/// @example css
+/// .overflow-auto {
+///     overflow: auto !important;
+/// }
+///
+@mixin overflow-helper($bp: '') {
+  @if meta.variable-exists(overflows) {
+    @each $overflow in $overflows {
+      .overflow-#{$overflow}#{$bp} {
+        overflow: $overflow !important;
+      }
+    }
+  } @else {
+    @error '[style-helpers -> overflow] : The variable $overflows is undefined';
+  }
+}
+
+///
+/// Set all float classes from the `$overflows` variable with breakpoints media queries.
+///
+/// @requires {mixin} utils-bp-only
+/// @requires {mixin} utils-bp-up
+/// @requires {array} utils-breakpoints
+/// @requires {string} utils-delimiter-breakpoint
+///
+/// @see overflow-helper
+///
+@mixin overflow-helper-with-bp {
+  @each $breakpoint, $value in utils.$breakpoints {
+    $index: list.index(map.keys(utils.$breakpoints), $breakpoint);
+
+    @if $index > 1 {
+      @include utils.bp-up($breakpoint) {
+        @include overflow-helper(#{utils.$delimiter-breakpoint}#{$breakpoint});
+      }
+    }
+
+    @include utils.bp-only($breakpoint) {
+      @include overflow-helper('#{utils.$delimiter-breakpoint}#{$breakpoint}-only');
+    }
+  }
+}
+
+///
+/// Helper `overflow` entry point
+///
+/// Combine both `overflow-helper` and `overflow-helper-with-bp` helpers in one helper.
+///
+/// @param {boolean} $with-bp - Add breakpoint classes.
+///
+/// @see overflow-helper
+/// @see overflow-helper-with-bp
+///
+@mixin overflow($with-bp: true) {
+  @include overflow-helper;
+
+  @if $with-bp {
+    @include overflow-helper-with-bp;
+  }
+}

@@ -1,0 +1,162 @@
+@use 'sass:list';
+@use 'sass:map';
+@use 'sass:math';
+@use 'sass:meta';
+@use '@wide/styles-utils' as utils;
+@use '../variables' as *;
+
+///
+/// Provide a cropping container in order to display media (usually images)
+/// cropped to certain ratios.
+///
+/// 1. Set up a positioning context in which the image can sit.
+/// 2. This is the crucial part: where the cropping happens.
+///
+/// @example html
+///   <div class="crop -r16:9 -r1:1@md">
+///     <div class="crop_content"></div>
+///   </div>
+///
+/// Inspired by Locomotive Boilerplate
+/// @link https://github.com/locomotivemtl/locomotive-boilerplate/blob/master/assets/styles/objects/_crop.scss
+///
+@mixin crop-helper {
+  .crop {
+    @include crop-ratios;
+
+    display: block;
+    position: relative; // -> [1]
+    overflow: hidden; // -> [2]
+
+    //
+    // Apply this class to the content (usually `img`) that needs cropping.
+    //
+    // 1. Image’s default positioning is top-left in the cropping box.
+    // 2. Make sure the media doesn’t stop itself too soon.
+    //
+    &_content,
+    > iframe,
+    > embed,
+    > object,
+    > video,
+    > picture,
+    > img {
+      position: absolute;
+      top: 0; // -> [1]
+      left: 0; // -> [1]
+      max-width: none; // -> [2]
+
+      &.-right {
+        right: 0;
+        left: auto;
+      }
+
+      &.-bottom {
+        top: auto;
+        bottom: 0;
+      }
+
+      &.-center {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    }
+  }
+}
+
+///
+/// Provide a cropping container in order to display media (usually images)
+/// cropped to certain ratios with breakpoints media queries.
+///
+/// @requires {mixin} utils-bp-only
+/// @requires {mixin} utils-bp-up
+/// @requires {array} utils-breakpoints
+/// @requires {string} utils-delimiter-breakpoint
+///
+/// @see crop-helper
+///
+@mixin crop-helper-with-bp {
+  @each $breakpoint, $value in utils.$breakpoints {
+    $index: list.index(map.keys(utils.$breakpoints), $breakpoint);
+
+    @if $index > 1 {
+      @include utils.bp-up($breakpoint) {
+        .crop {
+          @include crop-ratios(#{utils.$delimiter-breakpoint}#{$breakpoint});
+        }
+      }
+    }
+
+    @include utils.bp-only($breakpoint) {
+      .crop {
+        @include crop-ratios('#{utils.$delimiter-breakpoint}#{$breakpoint}-only');
+      }
+    }
+  }
+}
+
+///
+/// Loop from the `$ratios` list variable and set padding bottom value for each entry.
+///
+/// By default, `$rarios` list variable is set with:
+///  - `(1:1)`: Square. Used in some social networks, and in few devices
+///  - `(2:1)`: Univisium
+///  - `(3:2)`: Classic 35 mm still photographic film
+///  - `(4:3)`: Traditional television & computer monitor standard
+///  - `(5:3)`: A common European widescreen standard
+///  - `(5:4)`: Early television & large-format computer monitors
+///  - `(6:5)`: Fox Movietone aspect ratio
+///  - `(7:3)`: Widescreen computer monitors
+///  - `(11:8)`: Academy standard film aspect ratio
+///  - `(16:9)`: HD video standard
+///  - `(16:10)`: A common computer screen ratio
+///
+/// @param {string} $bp - Breakpoint string key.
+///
+/// @requires {string} utils-delimiter-ratio
+///
+/// @example css
+/// .-r16\:9 {
+///     padding-bottom: 56.25%;
+/// }
+///
+@mixin crop-ratios($bp: '') {
+  @if meta.variable-exists(ratios) {
+    @each $ratio in $ratios {
+      @each $antecedent, $consequent in $ratio {
+        @if meta.type-of($antecedent) != number {
+          @error '`#{$antecedent}` needs to be a number.';
+        }
+
+        @if meta.type-of($consequent) != number {
+          @error '`#{$consequent}` needs to be a number.';
+        }
+
+        &.-r#{$antecedent}#{utils.$delimiter-ratio}#{$consequent}#{$bp} {
+          padding-bottom: math.percentage($consequent / $antecedent);
+        }
+      }
+    }
+  } @else {
+    @error '[style-helpers -> crop] : The variable $ratios is undefined';
+  }
+}
+
+///
+/// Helper `crop` entry point.
+///
+/// Combine both `crop-helper` and `crop-helper-with-bp` helpers in one helper.
+///
+/// @param {boolean} $with-bp - Add breakpoint classes.
+///
+/// @see crop-helper
+/// @see crop-helper-with-bp
+///
+@mixin crop($with-bp: true) {
+  @include crop-helper;
+
+  @if $with-bp {
+    @include crop-helper-with-bp;
+  }
+}

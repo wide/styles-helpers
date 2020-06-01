@@ -1,0 +1,95 @@
+@use 'sass:list';
+@use 'sass:map';
+@use 'sass:meta';
+@use '@wide/styles-utils' as utils;
+@use '../variables' as *;
+
+///
+/// Set all position classes from the `$positions` variable.
+///
+/// By default, `$fonts-style` list variable is set with:
+///  - `absolute`
+///  - `fixed`
+///  - `initial`
+///  - `inherit`
+///  - `relative`
+///  - `static`
+///
+/// @param {string} $bp - Breakpoint string key.
+///
+/// @example css
+/// .position-absolute {
+///     position: absolute !important;
+/// }
+///
+@mixin position-helper($bp: '') {
+  @if meta.variable-exists(positions) {
+    @each $position in $positions {
+      .position-#{$position}#{$bp} {
+        position: $position !important;
+      }
+    }
+
+    .fixed {
+      &-top#{$bp},
+      &-bottom#{$bp} {
+        position: fixed;
+        right: 0;
+        left: 0;
+      }
+
+      &-top#{$bp} {
+        top: 0;
+      }
+
+      &-bottom#{$bp} {
+        bottom: 0;
+      }
+    }
+  } @else {
+    @error '[style-helpers -> position] : The variable $positions is undefined';
+  }
+}
+
+///
+/// Set all position classes from the `$positions` variable with breakpoints media queries.
+///
+/// @requires {mixin} utils-bp-only
+/// @requires {mixin} utils-bp-up
+/// @requires {array} utils-breakpoints
+/// @requires {string} utils-delimiter-breakpoint
+///
+/// @see position-helper
+///
+@mixin position-helper-with-bp {
+  @each $breakpoint, $value in utils.$breakpoints {
+    $index: list.index(map.keys(utils.$breakpoints), $breakpoint);
+
+    @if $index > 1 {
+      @include utils.bp-up($breakpoint) {
+        @include position-helper(#{utils.$delimiter-breakpoint}#{$breakpoint});
+      }
+    }
+
+    @include utils.bp-only($breakpoint) {
+      @include position-helper('#{utils.$delimiter-breakpoint}#{$breakpoint}-only');
+    }
+  }
+}
+
+///
+/// Helper `position` entry point.
+/// Combine `position-helper`, `position-helper-with-bp` helpers in one helper.
+///
+/// @param {boolean} $with-bp - Add breakpoint classes.
+///
+/// @see position-helper
+/// @see position-helper-with-bp
+///
+@mixin position($with-bp: true) {
+  @include position-helper;
+
+  @if $with-bp {
+    @include position-helper-with-bp;
+  }
+}

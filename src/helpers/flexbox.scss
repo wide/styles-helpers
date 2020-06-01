@@ -1,0 +1,168 @@
+@use 'sass:list';
+@use 'sass:map';
+@use 'sass:meta';
+@use '@wide/styles-utils' as utils;
+@use '../variables' as *;
+
+///
+/// Set all flexbox classes from the `$flexboxes` variable.
+///
+/// Possibility to override flexbox properties name and values name.
+///
+/// By default, `$flexboxes-properties-class-override` is empty.
+/// By default, `$flexboxes-values-class-override` override:
+///  - `flex-start` to `start`
+///  - `flex-end` to `end`
+///
+/// @param {string} $bp - Breakpoint string key.
+///
+/// @requires {mixin} utils-important
+///
+/// @example css
+/// .align-content-start {
+///     align-content: flex-start !important;
+/// }
+///
+@mixin flexbox-helper($bp: '') {
+  @if meta.variable-exists(flexboxes) {
+    $i: utils.important($flexboxes-important);
+
+    @each $flexbox-property, $flexbox-sub-properties in $flexboxes {
+      @each $flexbox-sub-property in $flexbox-sub-properties {
+        // Set the properties class name
+        $property: $flexbox-property;
+        $sub-property: $flexbox-sub-property;
+
+        // Get override class name if exists
+        $override-property: map.get($flexboxes-properties-class-override, $flexbox-property);
+        $override-sub-property: map.get($flexboxes-values-class-override, $flexbox-sub-property);
+
+        @if $override-property {
+          $property: $override-property;
+        }
+        @if $override-sub-property {
+          $sub-property: $override-sub-property;
+        }
+
+        // @each $test in map.get($properties, $bar) {
+        .#{$property}-#{$sub-property}#{$bp} {
+          #{$flexbox-property}: $flexbox-sub-property $i;
+        }
+      }
+    }
+  } @else {
+    @error '[style-helpers -> flexbox] : The variable $flexboxes is undefined';
+  }
+}
+
+///
+/// Set all flexbox classes from the `$flexboxes` variable with breakpoints media queries.
+///
+/// @requires {mixin} utils-bp-only
+/// @requires {mixin} utils-bp-up
+/// @requires {array} utils-breakpoints
+/// @requires {string} utils-delimiter-breakpoint
+///
+/// @see flexbox-helper
+///
+@mixin flexbox-helper-with-bp {
+  @each $breakpoint, $value in utils.$breakpoints {
+    $index: list.index(map.keys(utils.$breakpoints), $breakpoint);
+
+    @if $index > 1 {
+      @include utils.bp-up($breakpoint) {
+        @include flexbox-helper(#{utils.$delimiter-breakpoint}#{$breakpoint});
+      }
+    }
+
+    @include utils.bp-only($breakpoint) {
+      @include flexbox-helper('#{utils.$delimiter-breakpoint}#{$breakpoint}-only');
+    }
+  }
+}
+
+///
+/// Loop with `$flexboxes-factors-max-loop` variable to set all flexbox
+/// factor classes from the `$flexboxes-factors` list variable.
+///
+/// By default, `$flexboxes-factors` list variable is set with:
+///  - `flex-grow`
+///  - `flex-shrink`
+///  - `order`
+///
+/// By default, `$flexboxes-factors-max-loop` is set to `12`.
+///
+/// @param {string} $bp - Breakpoint string key.
+///
+/// @requires {mixin} utils-important
+///
+/// @example css
+/// .flex-grow-0 {
+///     flex-grow: 0 !important;
+/// }
+///
+@mixin flexbox-factor-helper($bp: '') {
+  @if meta.variable-exists(flexboxes-factors) {
+    $important: utils.important($flexboxes-important);
+
+    @each $factor in $flexboxes-factors {
+      @for $i from 0 through $flexboxes-factors-max-loop {
+        .#{$factor}-#{$i}#{$bp} {
+          #{$factor}: $i $important;
+        }
+      }
+    }
+  } @else {
+    @error '[style-helpers -> flexbox] : The variable $flexboxes-factors is undefined';
+  }
+}
+
+///
+/// Loop with `$flexboxes-factors-max-loop` variable to set all flexbox
+/// factor classes from the `$flexboxes-factors` list variable with breakpoints media queries.
+///
+/// @requires {mixin} utils-bp-only
+/// @requires {mixin} utils-bp-up
+/// @requires {array} utils-breakpoints
+/// @requires {string} utils-delimiter-breakpoint
+///
+/// @see flexbox-factor-helper
+///
+@mixin flexbox-factor-helper-with-bp() {
+  @each $breakpoint, $value in utils.$breakpoints {
+    $index: list.index(map.keys(utils.$breakpoints), $breakpoint);
+
+    @if $index > 1 {
+      @include utils.bp-up($breakpoint) {
+        @include flexbox-factor-helper(#{utils.$delimiter-breakpoint}#{$breakpoint});
+      }
+    }
+
+    @include utils.bp-only($breakpoint) {
+      @include flexbox-factor-helper('#{utils.$delimiter-breakpoint}#{$breakpoint}-only');
+    }
+  }
+}
+
+///
+/// Helper `flexbox` entry point.
+///
+/// Combine `flexbox-helper`, `flexbox-helper-with-bp`,
+/// `flexbox-factor` and `flexbox-factor-with-bp` helpers in one helper.
+///
+/// @param {boolean} $with-bp - Add breakpoint classes.
+///
+/// @see flexbox-helper
+/// @see flexbox-helper-with-bp
+/// @see flexbox-factor
+/// @see flexbox-factor-with-bp
+///
+@mixin flexbox($with-bp: true) {
+  @include flexbox-helper;
+  @include flexbox-factor-helper;
+
+  @if $with-bp {
+    @include flexbox-helper-with-bp;
+    @include flexbox-factor-helper-with-bp;
+  }
+}

@@ -1,0 +1,118 @@
+@use 'sass:list';
+@use 'sass:map';
+@use 'sass:meta';
+@use '@wide/styles-utils' as utils;
+@use '../variables' as *;
+
+///
+/// Set all font style classes from the `$fonts-style` variable.
+///
+/// By default, `$fonts-style` list variable is set with:
+///  - `italic`
+///
+/// @param {string} $bp - Breakpoint string key.
+///
+/// @requires {mixin} utils-important
+///
+/// @example css
+/// .font-style-italic {
+///     font-style: "italic" !important;
+/// }
+///
+@mixin font-style-helper($bp: '') {
+  @if meta.variable-exists(fonts-style) {
+    $i: utils.important($fonts-important);
+
+    @each $font-attr, $font-value in $fonts-style {
+      .font-style-#{$font-attr}#{$bp} {
+        font-style: $font-value $i;
+      }
+    }
+  } @else {
+    @error '[style-helpers -> font] : The variable $fonts-style is undefined';
+  }
+}
+
+///
+/// Set all font weight classes from the `$fonts-weight` variable.
+///
+/// By default, `$fonts-style` list variable is set with:
+///  - `lighter` to `100`
+///  - `light` to `200`
+///  - `normal` to `300`
+///  - `bold` to `600`
+///  - `bolder` to `800`
+///
+/// @param {string} $bp - Breakpoint string key.
+///
+/// @requires {mixin} utils-important
+///
+/// @example css
+/// .font-weight-lighter {
+///     font-weight: 100 !important;
+/// }
+///
+@mixin font-weight-helper($bp: '') {
+  @if meta.variable-exists(fonts-weight) {
+    $i: utils.important($fonts-important);
+
+    @each $font-attr, $font-value in $fonts-weight {
+      .font-weight-#{$font-attr}#{$bp} {
+        font-weight: $font-value $i;
+      }
+    }
+  } @else {
+    @error '[style-helpers -> font] : The variable $fonts-weight is undefined';
+  }
+}
+
+///
+/// Set all font style classes from the `$fonts-style` variable and
+/// all font weight classes from the `$fonts-weight` variable with breakpoints media queries.
+///
+/// @requires {mixin} utils-bp-only
+/// @requires {mixin} utils-bp-up
+/// @requires {array} utils-breakpoints
+/// @requires {string} utils-delimiter-breakpoint
+///
+/// @see font-style-helper
+/// @see font-weight-helper
+///
+@mixin font-helper-with-bp {
+  @each $breakpoint, $value in utils.$breakpoints {
+    $index: list.index(map.keys(utils.$breakpoints), $breakpoint);
+
+    @if $index > 1 {
+      @include utils.bp-up($breakpoint) {
+        @include font-style-helper(#{utils.$delimiter-breakpoint}#{$breakpoint});
+        @include font-weight-helper(#{utils.$delimiter-breakpoint}#{$breakpoint});
+      }
+    }
+
+    @include utils.bp-only($breakpoint) {
+      @include font-style-helper('#{utils.$delimiter-breakpoint}#{$breakpoint}-only');
+      @include font-weight-helper('#{utils.$delimiter-breakpoint}#{$breakpoint}-only');
+    }
+  }
+}
+
+///
+/// Helper `font` entry point
+///
+/// Combine `font-style-helper`, `font-weight-helper` and
+/// `font-helper-with-bp` helpers in one helper.
+///
+/// @param {boolean} $with-bp - Add breakpoint classes.
+///
+/// @see font-style-helper
+/// @see font-weight-helper
+/// @see font-helper-with-bp
+///
+@mixin font($with-bp: true) {
+  @include font-style-helper;
+  @include font-weight-helper;
+
+  @if $with-bp {
+    @include font-helper-with-bp;
+  }
+}

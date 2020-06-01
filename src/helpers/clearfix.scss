@@ -1,0 +1,11 @@
+@use '@wide/styles-utils' as utils;
+
+///
+/// Helper `clearfix` entry point.
+/// Define a `.clearfix` class.
+///
+@mixin clearfix {
+  .clearfix {
+    @include utils.el-clearfix;
+  }
+}

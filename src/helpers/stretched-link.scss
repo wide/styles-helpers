@@ -1,0 +1,73 @@
+@use 'sass:list';
+@use 'sass:map';
+@use 'sass:meta';
+@use '@wide/styles-utils' as utils;
+@use '../variables' as *;
+
+///
+/// Set stretched-link class.
+///
+/// @param {string} $bp - Breakpoint string key.
+///
+@mixin stretched-link-helper($bp: '') {
+  @if meta.variable-exists(zindex-stretched) {
+    .stretched-link#{$bp} {
+      &::after {
+        content: '';
+        position: absolute;
+        z-index: $zindex-stretched;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        pointer-events: auto;
+      }
+    }
+  } @else {
+    @error '[style-helpers -> stretched-link] : The variable $zindex-stretched is undefined';
+  }
+}
+
+///
+/// Set stretched-link class with breakpoints media queries.
+///
+/// @requires {mixin} utils-bp-only
+/// @requires {mixin} utils-bp-up
+/// @requires {array} utils-breakpoints
+/// @requires {string} utils-delimiter-breakpoint
+///
+/// @see stretched-link-helper
+///
+@mixin stretched-link-helper-with-bp() {
+  @each $breakpoint, $value in utils.$breakpoints {
+    $index: list.index(map.keys(utils.$breakpoints), $breakpoint);
+
+    @if $index > 1 {
+      @include utils.bp-up($breakpoint) {
+        @include stretched-link-helper(#{utils.$delimiter-breakpoint}#{$breakpoint});
+      }
+    }
+
+    @include utils.bp-only($breakpoint) {
+      @include stretched-link-helper('#{utils.$delimiter-breakpoint}#{$breakpoint}-only');
+    }
+  }
+}
+
+///
+/// Helper `stretched-link` entry point.
+///
+/// Combine both `stretched-link-helper` and `stretched-link-helper-with-bp` helpers in one helper.
+///
+/// @param {boolean} $with-bp - Add breakpoint classes.
+///
+/// @see stretched-link-helper
+/// @see stretched-link-helper-with-bp
+///
+@mixin stretched-link($with-bp: true) {
+  @include stretched-link-helper;
+
+  @if $with-bp {
+    @include stretched-link-helper-with-bp;
+  }
+}

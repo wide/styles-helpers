@@ -1,0 +1,115 @@
+@use 'sass:list';
+@use 'sass:map';
+@use 'sass:meta';
+@use '@wide/styles-utils' as utils;
+@use '../variables' as *;
+
+///
+/// Set all visibility classes from the `$visibilities` variable.
+///
+/// By default, `$visibilities-prefix` variable is set to 'v-'.
+///
+/// By default, `$visibilities` list variable is set with:
+///  - `visible`
+///  - `hidden`
+///
+/// @param {string} $bp - Breakpoint string key.
+///
+/// @requires {mixin} utils-important
+///
+/// @example css
+/// .v-visible {
+///     visibility: visible !important;
+/// }
+///
+@mixin visibility-helper($bp: '') {
+  $i: utils.important($visibilities-important);
+
+  @if meta.variable-exists(visibilities) {
+    @each $visibility in $visibilities {
+      .#{$visibilities-prefix}#{$visibility}#{$bp} {
+        visibility: $visibility $i;
+      }
+    }
+  } @else {
+    @error '[style-helpers -> visibility] : The variable $visibilities is undefined';
+  }
+}
+
+///
+/// Set all visibility classes from the `$visibilities` variable with breakpoints media queries.
+///
+/// @requires {mixin} utils-bp-only
+/// @requires {mixin} utils-bp-up
+/// @requires {array} utils-breakpoints
+/// @requires {string} utils-delimiter-breakpoint
+///
+/// @see visibility-helper
+///
+@mixin visibility-helper-with-bp {
+  @each $breakpoint, $value in utils.$breakpoints {
+    $index: list.index(map.keys(utils.$breakpoints), $breakpoint);
+
+    @if $index > 1 {
+      @include utils.bp-up($breakpoint) {
+        @include visibility-helper(#{utils.$delimiter-breakpoint}#{$breakpoint});
+      }
+    }
+
+    @include utils.bp-only($breakpoint) {
+      @include visibility-helper('#{utils.$delimiter-breakpoint}#{$breakpoint}-only');
+    }
+  }
+}
+
+///
+/// Set all visibility classes from the `$visibilities` variable with print media query.
+///
+/// @requires {mixin} utils-important
+///
+@mixin visibility-print-helper {
+  $i: utils.important($visibilities-important);
+
+  @each $visibility in $visibilities {
+    .#{$visibilities-prefix}#{$visibility}-print {
+      @media print {
+        visibility: $visibility $i;
+      }
+    }
+  }
+}
+
+///
+/// Set all visibility classes from the `$visibilities` variable with screen media query.
+///
+/// @requires {mixin} utils-important
+///
+@mixin visibility-screen-helper {
+  $i: utils.important($visibilities-important);
+
+  @each $visibility in $visibilities {
+    .#{$visibilities-prefix}#{$visibility}-screen {
+      @media screen {
+        visibility: $visibility $i;
+      }
+    }
+  }
+}
+
+///
+/// Helper `visibility` entry point.
+///
+/// Combine both `visibility-helper` and `visibility-helper-with-bp` helpers in one helper.
+///
+/// @param {boolean} $with-bp - Add breakpoint classes.
+///
+/// @see visibility-helper
+/// @see visibility-helper-with-bp
+///
+@mixin visibility($with-bp: true) {
+  @include visibility-helper;
+
+  @if $with-bp {
+    @include visibility-helper-with-bp;
+  }
+}

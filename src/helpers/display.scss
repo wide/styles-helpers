@@ -1,0 +1,104 @@
+@use 'sass:list';
+@use 'sass:map';
+@use 'sass:meta';
+@use '@wide/styles-utils' as utils;
+@use '../variables' as *;
+
+///
+/// Set all display classes from the `$displays` variable.
+///
+/// By default, `$displays-prefix` variable is set to 'd-'.
+///
+/// By default, `$fonts-style` list variable is set with:
+///  - `block`
+///  - `flex`
+///  - `inline`
+///  - `inline-block`
+///  - `inline-flex`
+///  - `none`
+///  - `table`
+///  - `table-cell`
+///  - `table-row`
+///
+/// @requires {mixin} utils-important
+///
+/// @example css
+/// .d-block {
+///     display: block !important;
+/// }
+///
+@mixin display-helper($bp: '') {
+  @if meta.variable-exists(displays) {
+    $i: utils.important($displays-important);
+
+    @each $display in $displays {
+      .#{$displays-prefix}#{$display}#{$bp} {
+        display: $display $i;
+      }
+    }
+  } @else {
+    @error '[style-helpers -> display] : The variable $displays is undefined';
+  }
+}
+
+///
+/// Set all display classes from the `$displays` variable with breakpoints media queries.
+///
+/// @requires {mixin} utils-bp-only
+/// @requires {mixin} utils-bp-up
+/// @requires {array} utils-breakpoints
+/// @requires {string} utils-delimiter-breakpoint
+///
+/// @see display-helper
+///
+@mixin display-helper-with-bp {
+  @each $breakpoint, $value in utils.$breakpoints {
+    $index: list.index(map.keys(utils.$breakpoints), $breakpoint);
+
+    @if $index > 1 {
+      @include utils.bp-up($breakpoint) {
+        @include display-helper(#{utils.$delimiter-breakpoint}#{$breakpoint});
+      }
+    }
+
+    @include utils.bp-only($breakpoint) {
+      @include display-helper('#{utils.$delimiter-breakpoint}#{$breakpoint}-only');
+    }
+  }
+}
+
+///
+/// Set all display classes from the `$displays` variable with print media query.
+///
+@mixin display-print-helper {
+  @media print {
+    @include display-helper('-print');
+  }
+}
+
+///
+/// Set all display classes from the `$displays` variable with screen media query.
+///
+@mixin display-screen-helper {
+  @media screen {
+    @include display-helper('-screen');
+  }
+}
+
+///
+/// Helper `display` entry point.
+///
+/// Combine both `display-helper` and `display-helper-with-bp` helpers in one helper.
+///
+/// @param {boolean} $with-bp - Add breakpoint classes.
+///
+/// @see display-helper
+/// @see display-helper-with-bp
+///
+@mixin display($with-bp: true) {
+  @include display-helper;
+
+  @if $with-bp {
+    @include display-helper-with-bp;
+  }
+}

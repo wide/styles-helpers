@@ -1,0 +1,441 @@
+///
+/// -----------------------------------------------------------------------------------------------
+/// ALIGNMENTS
+/// -----------------------------------------------------------------------------------------------
+///
+
+///
+/// Alignments list
+///
+/// @type List
+/// @prop {string} value - css properties
+///
+/// @access private
+///
+$aligns: (
+  baseline,
+  bottom,
+  middle,
+  top,
+  text-top,
+  text-bottom
+) !default;
+
+///
+/// Defined if the properties of `aligns`
+/// should contain the declaration `!important`
+///
+/// @type Bool
+///
+/// @access private
+///
+$aligns-important: true !default;
+
+///
+/// -----------------------------------------------------------------------------------------------
+/// DISPLAYS
+/// -----------------------------------------------------------------------------------------------
+///
+
+///
+/// Displays list
+///
+/// @type List
+/// @prop {string} value - css properties
+///
+/// @access private
+///
+$displays: (
+  block,
+  flex,
+  inline,
+  inline-block,
+  inline-flex,
+  none,
+  table,
+  table-cell,
+  table-row
+) !default;
+
+///
+/// Defined if the properties of `displays`
+/// should contain the declaration `!important`
+///
+/// @type Bool
+///
+/// @access private
+///
+$displays-important: true !default;
+
+///
+/// Define a prefix for the use of `displays` properties
+///
+/// @type String
+///
+/// @access private
+///
+$displays-prefix: 'd-' !default;
+
+///
+/// -----------------------------------------------------------------------------------------------
+/// FLEXBOXES
+/// -----------------------------------------------------------------------------------------------
+///
+
+///
+/// Flexboxes list
+///
+/// @type List
+/// @prop {List} value - css properties
+///
+/// @access private
+///
+$flexboxes: (
+  'flex-direction': (
+    row,
+    row-reverse,
+    column,
+    column-reverse
+  ),
+  'flex-wrap': (
+    wrap,
+    nowrap,
+    wrap-reverse
+  ),
+  'justify-content': (
+    flex-start,
+    flex-end,
+    center,
+    space-between,
+    space-around
+  ),
+  'align-content': (
+    flex-start,
+    flex-end,
+    center,
+    space-between,
+    space-around,
+    stretch
+  ),
+  'align-items': (
+    flex-start,
+    flex-end,
+    center,
+    baseline,
+    stretch
+  ),
+  'align-self': (
+    flex-start,
+    flex-end,
+    center,
+    baseline,
+    stretch
+  )
+) !default;
+
+///
+/// Flexbox properties list for override class name
+///
+/// @type List
+/// @prop {List} value - css properties
+///
+/// @access private
+///
+$flexboxes-properties-class-override: (
+  // 'flex-direction': '',
+  // 'flex-wrap': '',
+  // 'justify-content': '',
+  // 'align-content': '',
+  // 'align-items': '',
+  // 'align-self': ''
+) !default;
+
+///
+/// Flexbox values list for override class name
+///
+/// @type List
+/// @prop {List} value - css properties
+///
+/// @access private
+///
+$flexboxes-values-class-override: (
+  // 'row': '',
+  // 'row-reverse': '',
+  // 'column': '',
+  // 'column-reverse': '',
+  // 'wrap': '',
+  // 'nowrap': '',
+  // 'wrap-reverse': '',
+  'flex-start': 'start',
+  'flex-end': 'end',
+  // 'center': '',
+  // 'space-between': '',
+  // 'space-around': '',
+  // 'stretch': '',
+  // 'baseline': ''
+) !default;
+
+///
+/// Flexbox factor properties to loop
+///
+/// @type List
+/// @prop {List} value - css properties
+///
+/// @access private
+///
+$flexboxes-factors: (
+  'flex-grow',
+  'flex-shrink',
+  'order'
+) !default;
+
+///
+/// Flexbox factor max loop
+///
+/// @type Number
+///
+/// @access private
+///
+$flexboxes-factors-max-loop: 12 !default;
+
+///
+/// Defined if the properties of `flexboxes`
+/// should contain the declaration `!important`
+///
+/// @type Bool
+///
+/// @access private
+///
+$flexboxes-important: true !default;
+
+///
+/// -----------------------------------------------------------------------------------------------
+/// FLOATS
+/// -----------------------------------------------------------------------------------------------
+///
+
+///
+/// Floats list
+///
+/// @type List
+/// @prop {string} value - css properties
+///
+/// @access private
+///
+$floats: (
+  right,
+  left,
+  none
+) !default;
+
+///
+/// -----------------------------------------------------------------------------------------------
+/// FONTS
+/// -----------------------------------------------------------------------------------------------
+///
+
+///
+/// Fonts style list
+///
+/// @type List
+/// @prop {array} value - css properties
+///
+/// @access private
+///
+$fonts-style: (
+  'italic': 'italic'
+) !default;
+
+///
+/// Fonts weight list
+///
+/// @type List
+/// @prop {array} value - css properties
+///
+/// @access private
+///
+$fonts-weight: (
+  'lighter': 100,
+  'light': 200,
+  'normal': 300,
+  'bold': 600,
+  'bolder': 800
+) !default;
+
+///
+/// Defined if the properties of `fonts`
+/// should contain the declaration `!important`
+///
+/// @type Bool
+///
+/// @access private
+///
+$fonts-important: true !default;
+
+///
+/// -----------------------------------------------------------------------------------------------
+/// OVERFLOWS
+/// -----------------------------------------------------------------------------------------------
+///
+
+///
+/// Overflows list
+///
+/// @type List
+/// @prop {string} value - css properties
+///
+/// @access private
+///
+$overflows: (
+  auto,
+  hidden
+) !default;
+
+///
+/// -----------------------------------------------------------------------------------------------
+/// POSITIONS
+/// -----------------------------------------------------------------------------------------------
+///
+
+///
+/// Positions list
+///
+/// @type List
+/// @prop {string} value - css properties
+///
+/// @access private
+///
+$positions: (
+  absolute,
+  fixed,
+  initial,
+  inherit,
+  relative,
+  static
+) !default;
+
+///
+/// -----------------------------------------------------------------------------------------------
+/// RATIOS
+/// -----------------------------------------------------------------------------------------------
+///
+
+///
+/// Ratios list
+///
+/// @type List
+/// @prop {array} value - css properties
+///
+/// @access private
+///
+$ratios: (
+  (1:1),   // Square. Used in some social networks, and in few devices
+  (2:1),   // Univisium
+  (3:2),   // Classic 35 mm still photographic film
+  (4:3),   // Traditional television & computer monitor standard
+  (5:3),   // A common European widescreen standard
+  (5:4),   // Early television & large-format computer monitors
+  (6:5),   // Fox Movietone aspect ratio
+  (7:3),   // Widescreen computer monitors
+  (11:8),  // Academy standard film aspect ratio
+  (16:9),  // HD video standard
+  (16:10), // A common computer screen ratio
+) !default;
+
+///
+/// -----------------------------------------------------------------------------------------------
+/// TEXTS
+/// -----------------------------------------------------------------------------------------------
+///
+
+///
+/// Text aligns list
+///
+/// @type List
+/// @prop {string} value - css properties
+///
+/// @access private
+///
+$text-aligns: (
+  center,
+  justify,
+  left,
+  right
+) !default;
+
+///
+/// Text transforms list
+///
+/// @type List
+/// @prop {string} value - css properties
+///
+/// @access private
+///
+$text-transforms: (
+  capitalize,
+  lowercase,
+  uppercase
+) !default;
+
+///
+/// Defined if the properties of `text`
+/// should contain the declaration `!important`
+///
+/// @type Bool
+///
+/// @access private
+///
+$text-important: true !default;
+
+///
+/// -----------------------------------------------------------------------------------------------
+/// VISIBILITIES
+/// -----------------------------------------------------------------------------------------------
+///
+
+///
+/// Visibilities list
+///
+/// @type List
+/// @prop {string} value - css properties
+///
+/// @access private
+///
+$visibilities: (
+  visible,
+  hidden
+) !default;
+
+///
+/// Defined if the properties of `visibilities`
+/// should contain the declaration `!important`
+///
+/// @type Bool
+///
+/// @access private
+///
+$visibilities-important: true !default;
+
+///
+/// Define a prefix for the use of `visibilities` properties
+///
+/// @type String
+///
+/// @access private
+///
+$visibilities-prefix: 'v-' !default;
+
+///
+/// -----------------------------------------------------------------------------------------------
+/// Z-INDEXES
+/// -----------------------------------------------------------------------------------------------
+///
+
+///
+/// Defaut z-index for stretched link
+///
+/// @type Number
+///
+/// @access private
+///
+$zindex-stretched: 1 !default;

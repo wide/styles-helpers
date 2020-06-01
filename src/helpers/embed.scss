@@ -1,0 +1,131 @@
+@use 'sass:list';
+@use 'sass:map';
+@use 'sass:math';
+@use 'sass:meta';
+@use '@wide/styles-utils' as utils;
+@use '../variables' as *;
+
+///
+/// Create ratio-bound content blocks, to keep media (e.g. images, videos) in
+/// their correct aspect ratios.
+///
+/// @example html
+///   <div class="embed -r16:9 -r1:1@md">
+///     <div class="embed_content"></div>
+///   </div>
+///
+/// 1. Default cropping is a 1:1 ratio (i.e. a perfect square).
+///
+/// Inspired by Locomotive Boilerplate
+/// @link https://github.com/locomotivemtl/locomotive-boilerplate/blob/master/assets/styles/objects/_ratio.scss
+///
+@mixin embed-helper {
+  .embed {
+    @include embed-ratios;
+
+    display: block;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      display: block;
+      width: 100%;
+      padding-bottom: 100%; // -> [1]
+    }
+
+    &_content,
+    > iframe,
+    > embed,
+    > object,
+    > video,
+    > picture,
+    > img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+  }
+}
+
+///
+/// Create ratio-bound content blocks, to keep media (e.g. images, videos)
+/// in their correct aspect ratios.
+///
+/// @requires {string} utils-delimiter-ratio
+///
+@mixin embed-ratios($bp: '') {
+  @if meta.variable-exists(ratios) {
+    @each $ratio in $ratios {
+      @each $antecedent, $consequent in $ratio {
+        @if meta.type-of($antecedent) != number {
+          @error '`#{$antecedent}` needs to be a number.';
+        }
+
+        @if meta.type-of($consequent) != number {
+          @error '`#{$consequent}` needs to be a number.';
+        }
+
+        &.-r#{$antecedent}#{utils.$delimiter-ratio}#{$consequent}#{$bp} {
+          &::before {
+            padding-bottom: math.percentage($consequent / $antecedent);
+          }
+        }
+      }
+    }
+  } @else {
+    @error '[style-helpers -> embed] : The variable $ratios is undefined';
+  }
+}
+
+///
+/// Create ratio-bound content blocks, to keep media (e.g. images, videos)
+/// in their correct aspect ratios with breakpoints media queries.
+///
+/// @requires {mixin} utils-bp-only
+/// @requires {mixin} utils-bp-up
+/// @requires {array} utils-breakpoints
+/// @requires {string} utils-delimiter-breakpoint
+///
+/// @see embed-helper
+///
+@mixin embed-helper-with-bp {
+  @each $breakpoint, $value in utils.$breakpoints {
+    $index: list.index(map.keys(utils.$breakpoints), $breakpoint);
+
+    @if $index > 1 {
+      @include utils.bp-up($breakpoint) {
+        .embed {
+          @include embed-ratios(#{utils.$delimiter-breakpoint}#{$breakpoint});
+        }
+      }
+    }
+
+    @include utils.bp-only($breakpoint) {
+      .embed {
+        @include embed-ratios('#{utils.$delimiter-breakpoint}#{$breakpoint}-only');
+      }
+    }
+  }
+}
+
+///
+/// Helper `embed` entry point.
+///
+/// Combine both `embed-helper` and `embed-helper-with-bp` helpers in one helper.
+///
+/// @param {boolean} $with-bp - Add breakpoint classes.
+///
+/// @see embed-helper
+/// @see embed-helper-with-bp
+///
+@mixin embed($with-bp: true) {
+  @include embed-helper;
+
+  @if $with-bp {
+    @include embed-helper-with-bp;
+  }
+}

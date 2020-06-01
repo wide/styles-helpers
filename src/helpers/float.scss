@@ -1,0 +1,76 @@
+@use 'sass:list';
+@use 'sass:map';
+@use 'sass:meta';
+@use '@wide/styles-utils' as utils;
+@use '../variables' as *;
+
+///
+/// Set all float classes from the `$floats` variable.
+///
+/// By default, `$floats` list variable is set with:
+///  - `right`
+///  - `left`
+///  - `none`
+///
+/// @param {string} $bp - Breakpoint string key.
+///
+/// @example css
+/// .float-right {
+///     float: right !important;
+/// }
+///
+@mixin float-helper($bp: '') {
+  @if meta.variable-exists(floats) {
+    @each $float in $floats {
+      .float-#{$float}#{$bp} {
+        float: $float !important;
+      }
+    }
+  } @else {
+    @error '[style-helpers -> float] : The variable $floats is undefined';
+  }
+}
+
+///
+/// Set all float classes from the `$floats` variable with breakpoints media query.
+///
+/// @requires {mixin} utils-bp-only
+/// @requires {mixin} utils-bp-up
+/// @requires {array} utils-breakpoints
+/// @requires {string} utils-delimiter-breakpoint
+///
+/// @see float-helper
+///
+@mixin float-helper-with-bp {
+  @each $breakpoint, $value in utils.$breakpoints {
+    $index: list.index(map.keys(utils.$breakpoints), $breakpoint);
+
+    @if $index > 1 {
+      @include utils.bp-up($breakpoint) {
+        @include float-helper(#{utils.$delimiter-breakpoint}#{$breakpoint});
+      }
+    }
+
+    @include utils.bp-only($breakpoint) {
+      @include float-helper('#{utils.$delimiter-breakpoint}#{$breakpoint}-only');
+    }
+  }
+}
+
+///
+/// Helper `float` entry point
+///
+/// Combine both `float-helper` and `float-helper-with-bp` helpers in one helper.
+///
+/// @param {boolean} $with-bp - Add breakpoint classes.
+///
+/// @see float-helper
+/// @see float-helper-with-bp
+///
+@mixin float($with-bp: true) {
+  @include float-helper;
+
+  @if $with-bp {
+    @include float-helper-with-bp;
+  }
+}

@@ -1,0 +1,49 @@
+@use '@wide/styles-utils' as utils;
+
+///
+/// ARIA roles display visual cursor hints
+///
+@mixin a11y-aria {
+  [aria-busy='true'] {
+    cursor: progress;
+  }
+
+  [aria-controls] {
+    cursor: pointer;
+  }
+
+  [aria-disabled] {
+    cursor: default;
+  }
+}
+
+///
+/// Screen readers
+///
+/// @requires {mixin} a11y-only
+/// @requires {mixin} a11y-focusable
+///
+@mixin a11y-sr {
+  .a11y-sr {
+    &-only {
+      @include utils.a11y-only;
+    }
+
+    &-focusable {
+      @include utils.a11y-focusable;
+    }
+  }
+}
+
+///
+/// Helper `a11y` entry point
+///
+/// Combine both `a11y-aria` and `a11y-sr` helpers in one helper.
+///
+/// @see a11y-aria
+/// @see a11y-sr
+///
+@mixin a11y {
+  @include a11y-aria;
+  @include a11y-sr;
+}

@@ -1,0 +1,90 @@
+@use 'sass:list';
+@use 'sass:map';
+@use 'sass:meta';
+@use '@wide/styles-utils' as utils;
+@use '../variables' as *;
+
+///
+/// Set all alignments classes from the `$aligns` variable.
+///
+/// By default, `$aligns` list variable is set with:
+///  - `baseline`
+///  - `bottom`
+///  - `middle`
+///  - `top`
+///  - `text-top`
+///  - `text-bottom`
+///
+/// @param {string} $bp - Breakpoint string key.
+///
+/// @requires {mixin} utils-el-vcenter
+/// @requires {mixin} utils-important
+///
+/// @example css
+/// .align-baseline {
+///     vertical-align: baseline !important;
+/// }
+///
+@mixin alignment-helper($bp: '') {
+  @if meta.variable-exists(aligns) {
+    $i: utils.important($displays-important);
+
+    // common values
+    @each $align in $aligns {
+      .align-#{$align}#{$bp} {
+        vertical-align: $align $i;
+      }
+    }
+
+    // vertical center
+    .align-vcenter#{$bp} {
+      @include utils.el-vcenter;
+    }
+  } @else {
+    @error '[style-helpers -> alignment] : The variable $aligns is undefined';
+  }
+}
+
+///
+/// Set all alignments classes from the `$aligns` variable with breakpoints media queries.
+///
+/// @requires {mixin} utils-bp-only
+/// @requires {mixin} utils-bp-up
+/// @requires {array} utils-breakpoints
+/// @requires {string} utils-delimiter-breakpoint
+///
+/// @see alignment-helper
+///
+@mixin alignment-helper-with-bp {
+  @each $breakpoint, $value in utils.$breakpoints {
+    $index: list.index(map.keys(utils.$breakpoints), $breakpoint);
+
+    @if $index > 1 {
+      @include utils.bp-up($breakpoint) {
+        @include alignment-helper(#{utils.$delimiter-breakpoint}#{$breakpoint});
+      }
+    }
+
+    @include utils.bp-only($breakpoint) {
+      @include alignment-helper('#{utils.$delimiter-breakpoint}#{$breakpoint}-only');
+    }
+  }
+}
+
+///
+/// Helper `alignment` entry point.
+///
+/// Combine both `alignment-helper` and `alignment-helper-with-bp` helpers in one helper.
+///
+/// @param {boolean} $with-bp - Add breakpoint classes.
+///
+/// @see alignment-helper
+/// @see alignment-helper-with-bp
+///
+@mixin alignment($with-bp: true) {
+  @include alignment-helper;
+
+  @if $with-bp {
+    @include alignment-helper-with-bp;
+  }
+}

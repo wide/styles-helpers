@@ -1,0 +1,163 @@
+@use 'sass:list';
+@use 'sass:map';
+@use 'sass:meta';
+@use '@wide/styles-utils' as utils;
+@use '../variables' as *;
+
+///
+/// Set all text-align classes from the `$text-aligns` variable.
+///
+/// By default, `$text-aligns` list variable is set with:
+///  - `center`
+///  - `justify`
+///  - `left`
+///  - `right`
+///
+/// @param {string} $bp - Breakpoint string key.
+///
+/// @requires {mixin} utils-important
+///
+/// @example css
+/// .text-center {
+///     text-align: center !important;
+/// }
+///
+@mixin text-aligns-helper($bp: '') {
+  @if meta.variable-exists(text-aligns) {
+    $i: utils.important($text-important);
+
+    @each $align in $text-aligns {
+      .text-#{$align}#{$bp} {
+        text-align: $align $i;
+      }
+    }
+  } @else {
+    @error '[style-helpers -> text] : The variable $text-aligns is undefined';
+  }
+}
+
+///
+/// Set all text-transform classes from the `$text-transforms` variable.
+///
+/// By default, `$text-transforms` list variable is set with:
+///  - `capitalize`
+///  - `lowercase`
+///  - `uppercase`
+///
+/// @param {string} $bp - Breakpoint string key.
+///
+/// @requires {mixin} utils-important
+///
+/// @example css
+/// .text-capitalize {
+///     text-transform: capitalize !important;
+/// }
+///
+@mixin text-transforms-helper($bp: '') {
+  @if meta.variable-exists(text-transforms) {
+    $i: utils.important($text-important);
+
+    @each $transform in $text-transforms {
+      .text-#{$transform}#{$bp} {
+        text-transform: $transform $i;
+      }
+    }
+  } @else {
+    @error '[style-helpers -> text] : The variable $text-transforms is undefined';
+  }
+}
+
+///
+/// Set text-miscs classes
+///
+/// @param {string} $bp - Breakpoint string key.
+///
+/// @requires {mixin} utils-important
+/// @requires {mixin} utils-text-truncate
+///
+@mixin text-miscs-helper($bp: '') {
+  $i: utils.important($text-important);
+
+  .text {
+    &-decoration-none#{$bp} {
+      text-decoration: none $i;
+    }
+
+    &-break#{$bp} {
+      overflow-wrap: break-word $i;
+      word-break: break-word $i; // fallback for old browsers
+    }
+
+    &-truncate#{$bp} {
+      @include utils.text-truncate;
+    }
+
+    &-wrap#{$bp} {
+      white-space: normal $i;
+    }
+
+    &-nowrap#{$bp} {
+      white-space: nowrap $i;
+    }
+
+    &-reset#{$bp} {
+      color: inherit $i;
+    }
+  }
+}
+
+///
+/// Set `text-aligns-helper`, `text-transforms-helper` and
+/// `text-miscs-helper` helpers in one helper with breakpoints media queries.
+///
+/// @requires {mixin} utils-bp-only
+/// @requires {mixin} utils-bp-up
+/// @requires {array} utils-breakpoints
+/// @requires {string} utils-delimiter-breakpoint
+///
+/// @see text-aligns-helper
+/// @see text-transforms-helper
+/// @see text-miscs-helpers
+///
+@mixin text-helper-with-bp {
+  @each $breakpoint, $value in utils.$breakpoints {
+    $index: list.index(map.keys(utils.$breakpoints), $breakpoint);
+
+    @if $index > 1 {
+      @include utils.bp-up($breakpoint) {
+        @include text-aligns-helper(#{utils.$delimiter-breakpoint}#{$breakpoint});
+        @include text-transforms-helper(#{utils.$delimiter-breakpoint}#{$breakpoint});
+        @include text-miscs-helper(#{utils.$delimiter-breakpoint}#{$breakpoint});
+      }
+    }
+
+    @include utils.bp-only($breakpoint) {
+      @include text-aligns-helper('#{utils.$delimiter-breakpoint}#{$breakpoint}-only');
+      @include text-transforms-helper('#{utils.$delimiter-breakpoint}#{$breakpoint}-only');
+      @include text-miscs-helper('#{utils.$delimiter-breakpoint}#{$breakpoint}-only');
+    }
+  }
+}
+
+///
+/// Helper `text` entry point.
+///
+/// Combine `text-aligns-helper`, `text-transforms-helper`, `text-miscs-helper`
+/// and `text-helper-with-bp` helpers in one helper.
+///
+/// @param {boolean} $with-bp - Add breakpoint classes.
+///
+/// @see text-aligns-helper
+/// @see text-transforms-helper
+/// @see text-miscs-helpers
+/// @see text-helper-with-bp
+///
+@mixin text($with-bp: true) {
+  @include text-aligns-helper;
+  @include text-transforms-helper;
+  @include text-miscs-helper;
+
+  @if $with-bp {
+    @include text-helper-with-bp;
+  }
+}
