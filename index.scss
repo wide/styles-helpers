@@ -1,3 +1,11 @@
+///
+/// Variables
+///
+@forward 'src/variables';
+
+///
+/// Helpers
+///
 @forward 'src/helpers/a11y';
 @forward 'src/helpers/alignment';
 @forward 'src/helpers/clearfix';
