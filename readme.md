@@ -3371,7 +3371,7 @@ $zindex-stretched: 1 !default;
 
 #### <a name="stretched-link-helper"></a>`stretched-link-helper()`
 
-Set stretched-link class.
+Set stretched-link classes.
 
 ```scss
 @use '@wide/styles-helpers' as helpers;
@@ -3391,11 +3391,22 @@ Set stretched-link class.
     top: 0;
     z-index: 1;
 }
+
+.stretched-link-b::before {
+    bottom: 0;
+    content: "";
+    left: 0;
+    pointer-events: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 1;
+}
 ```
 
 #### <a name="stretched-link-helper-with-bp"></a>`stretched-link-helper-with-bp()`
 
-Set stretched-link class with breakpoints media queries.
+Set stretched-link classes with breakpoints media queries.
 
 ```scss
 @use '@wide/styles-helpers' as helpers;
@@ -3416,56 +3427,77 @@ Set stretched-link class with breakpoints media queries.
         top: 0;
         z-index: 1;
     }
+
+    .stretched-link-b\@xs-only::before {
+        bottom: 0;
+        content: "";
+        left: 0;
+        pointer-events: auto;
+        position: absolute;
+        right: 0;
+        top: 0;
+        z-index: 1;
+    }
 }
 /* and so on */
 @media (min-width: 36em) {
     /*
      * .stretched-link\@sm
+     * .stretched-link-b\@sm
      */
 }
 @media (min-width: 36em) and (max-width: 47.99875em) {
     /*
      * .stretched-link\@sm-only
+     * .stretched-link-b\@sm-only
      */
 }
 @media (min-width: 48em) {
     /*
      * .stretched-link\@md
+     * .stretched-link-b\@md
      */
 }
 @media (min-width: 48em) and (max-width: 63.99875em) {
     /*
      * .stretched-link\@md-only
+     * .stretched-link-b\@md-only
      */
 }
 @media (min-width: 64em) {
     /*
      * .stretched-link\@lg
+     * .stretched-link-b\@lg
      */
 }
 @media (min-width: 64em) and (max-width: 74.99875em) {
     /*
      * .stretched-link\@lg-only
+     * .stretched-link-b\@lg-only
      */
 }
 @media (min-width: 75em) {
     /*
      * .stretched-link\@xl
+     * .stretched-link-b\@xl
      */
 }
 @media (min-width: 75em) and (max-width: 99.99875em) {
     /*
      * .stretched-link\@xl-only
+     * .stretched-link-b\@xl-only
      */
 }
 @media (min-width: 100em) {
     /*
      * .stretched-link\@xxl
+     * .stretched-link-b\@xxl
      */
 }
 @media (min-width: 100em) {
     /*
      * .stretched-link\@xxl-only
+     * .stretched-link-b\@xxl-only
      */
 }
 ```
