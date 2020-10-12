@@ -846,6 +846,7 @@ $displays: (
     inline,
     inline-block,
     inline-flex,
+    list-item,
     none,
     table,
     table-cell,
@@ -903,6 +904,10 @@ Set all display classes from the [`$displays`](#display-variables-displays) vari
     display: inline-flex !important;
 }
 
+.d-list-item {
+  display: list-item !important;
+}
+
 .d-none {
     display: none !important;
 }
@@ -953,6 +958,10 @@ Set all display classes from the [`$displays`](#display-variables-displays) vari
         display: inline-flex !important;
     }
 
+    .d-list-item\@xs-only {
+        display: list-item !important;
+    }
+
     .d-none\@xs-only {
         display: none !important;
     }
@@ -977,6 +986,7 @@ Set all display classes from the [`$displays`](#display-variables-displays) vari
      * .d-inline\@sm
      * .d-inline-block\@sm
      * .d-inline-flex\@sm
+     * .d-list-item\@sm
      * .d-none\@sm
      * .d-table\@sm
      * .d-table-cell\@sm
@@ -990,6 +1000,7 @@ Set all display classes from the [`$displays`](#display-variables-displays) vari
      * .d-inline\@sm-only
      * .d-inline-block\@sm-only
      * .d-inline-flex\@sm-only
+     * .d-list-item\@sm-only
      * .d-none\@sm-only
      * .d-table\@sm-only
      * .d-table-cell\@sm-only
@@ -1003,6 +1014,7 @@ Set all display classes from the [`$displays`](#display-variables-displays) vari
      * .d-inline\@md
      * .d-inline-block\@md
      * .d-inline-flex\@md
+     * .d-list-item\@md
      * .d-none\@md
      * .d-table\@md
      * .d-table-cell\@md
@@ -1016,6 +1028,7 @@ Set all display classes from the [`$displays`](#display-variables-displays) vari
      * .d-inline\@md-only
      * .d-inline-block\@md-only
      * .d-inline-flex\@md-only
+     * .d-list-item\@md-only
      * .d-none\@md-only
      * .d-table\@md-only
      * .d-table-cell\@md-only
@@ -1029,6 +1042,7 @@ Set all display classes from the [`$displays`](#display-variables-displays) vari
      * .d-inline\@lg
      * .d-inline-block\@lg
      * .d-inline-flex\@lg
+     * .d-list-item\@lg
      * .d-none\@lg
      * .d-table\@lg
      * .d-table-cell\@lg
@@ -1042,6 +1056,7 @@ Set all display classes from the [`$displays`](#display-variables-displays) vari
      * .d-inline\@lg-only
      * .d-inline-block\@lg-only
      * .d-inline-flex\@lg-only
+     * .d-list-item\@lg-only
      * .d-none\@lg-only
      * .d-table\@lg-only
      * .d-table-cell\@lg-only
@@ -1055,6 +1070,7 @@ Set all display classes from the [`$displays`](#display-variables-displays) vari
      * .d-inline\@xl
      * .d-inline-block\@xl
      * .d-inline-flex\@xl
+     * .d-list-item\@xl
      * .d-none\@xl
      * .d-table\@xl
      * .d-table-cell\@xl
@@ -1068,6 +1084,7 @@ Set all display classes from the [`$displays`](#display-variables-displays) vari
      * .d-inline\@xl-only
      * .d-inline-block\@xl-only
      * .d-inline-flex\@xl-only
+     * .d-list-item\@xl-only
      * .d-none\@xl-only
      * .d-table\@xl-only
      * .d-table-cell\@xl-only
@@ -1081,6 +1098,7 @@ Set all display classes from the [`$displays`](#display-variables-displays) vari
      * .d-inline\@xxl
      * .d-inline-block\@xxl
      * .d-inline-flex\@xxl
+     * .d-list-item\@xxl
      * .d-none\@xxl
      * .d-table@xxl
      * .font-weight-bolder\@xxl
@@ -1094,6 +1112,7 @@ Set all display classes from the [`$displays`](#display-variables-displays) vari
      * .d-inline\@xxl-only
      * .d-inline-block\@xxl-only
      * .d-inline-flex\@xxl-only
+     * .d-list-item\@xxl-only
      * .d-none\@xxl-only
      * .d-table@xxl-only
      * .font-weight-bolder\@xxl-only
@@ -1121,6 +1140,7 @@ Set all display classes from the [`$displays`](#display-variables-displays) vari
      * .d-inline
      * .d-inline-block
      * .d-inline-flex
+     * .d-list-item
      * .d-none
      * .d-table
      * .d-table-cell
@@ -1148,6 +1168,7 @@ Set all display classes from the [`$displays`](#display-variables-displays) vari
      * .d-inline
      * .d-inline-block
      * .d-inline-flex
+     * .d-list-item
      * .d-none
      * .d-table
      * .d-table-cell
