@@ -71,7 +71,7 @@
 
         &.-r#{$antecedent}#{utils.$delimiter-ratio}#{$consequent}#{$bp} {
           &::before {
-            padding-bottom: math.percentage($consequent / $antecedent);
+            padding-bottom: math.percentage(math.div($consequent, $antecedent));
           }
         }
       }
